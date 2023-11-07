@@ -48,7 +48,7 @@
 					class="graph-options"
 				>
 					<Checkbox 
-						v-model="selectedCategories" 
+						v-model="selectedParameters" 
 						:inputId="category.key" 
 						name="category" 
 						:value="[category]" 
@@ -79,8 +79,7 @@ export default {
 		return {
 			display: false,
 			records: null,
-			barChartsByTeamValue: false,
-			selectedCategories: [],
+			selectedParameters: [],
 			selectedGraphOptions: [],
 			barChartsByTeam: {
 				title: 'Opciones',
@@ -112,7 +111,7 @@ export default {
 	},
 	computed: {
 		disabledSaveButton() {
-			return this.records === null || this.records === '' || this.selectedCategories.length === 0 || this.selectedGraphOptions.length === 0 ? true : false;
+			return this.records === null || this.records === '' || this.selectedParameters.length === 0 || this.selectedGraphOptions.length === 0 ? true : false;
 		}
 	},
 	methods: {
@@ -121,50 +120,35 @@ export default {
 		},
 		saveRecords() {
 			let data = {};
-			data.data = JSON.parse(this.records);
-			let options = [];
-			for (const category of this.selectedCategories) {
-				options.push(category[0]);
-			}
-
-			const keyValueObject = options.reduce((acc, item) => {
-				acc[item.key] = item.name;
-				return acc;
-			}, {});
-
-			data.options = keyValueObject;
-
-
-
-			let graphOptions = [];
-			for (const category of this.selectedGraphOptions) {
-				graphOptions.push(category[0]);
-			}
-
-			const arrayGraphOptions = graphOptions.reduce((acc, item) => {
-				acc[item.key] = item.name;
-				return acc;
-			}, {});
-
-			data.graphOptions = arrayGraphOptions;
-
-			console.log('data');
-			console.log(data);
+			data.records = JSON.parse(this.records);
+			data.parameters = this.getParametersOptions();
+			data.graphOptions = this.getGraphOptions();
 
 			this.$emit('saveRecords', data);
 			this.display = false;
 		},
-		changeBarChartsByTeamValue() {
-			if (this.barChartsByTeamValue) {
-				for (const item of this.barChartsByTeam.options) {
-					item.disabled = false;
-				}
-			} else {
-				this.selectedCategories = [];
-				for (const item of this.barChartsByTeam.options) {
-					item.disabled = true;
-				}
+		getParametersOptions() {
+			let parameters = [];
+			for (const parameter of this.selectedParameters) {
+				parameters.push(parameter[0]);
 			}
+
+			return parameters.reduce((acc, item) => {
+				acc[item.key] = item.name;
+				return acc;
+			}, {});
+
+		},
+		getGraphOptions() {
+			let graphOptions = [];
+			for (const graphOption of this.selectedGraphOptions) {
+				graphOptions.push(graphOption[0]);
+			}
+
+			return graphOptions.reduce((acc, item) => {
+				acc[item.key] = item.name;
+				return acc;
+			}, {});
 		}
 	},
 };

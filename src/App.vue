@@ -50,8 +50,8 @@ export default {
 	},
 	methods: {
 		saveRecords(data) {
-			this.records = data.data;
-			this.options = data.options;
+			this.records = data.records;
+			this.options = data.parameters;
 			this.graphOptions = data.graphOptions;
 		}
 	},
